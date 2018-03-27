@@ -1,0 +1,302 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Port Tester</title>
+  <meta name="description" content="The HTML5 Herald">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Jura" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <style>
+    body {
+      TEXT-ALIGN: center;
+      margin-top: 10px;
+      font-family: 'Jura', sans-serif;
+    }
+    #contentArea{
+      overflow: hidden;
+      Font-size:20pt;
+    }
+    .IPArea{
+      font-size:15pt;
+    }
+    .divCenter{
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid #e7e7e7;
+      background-color: #f3f3f3;
+    }
+    li {
+      float: left;
+    }
+    li a {
+      display: block;
+      color: #666;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+    li a:hover:not(.active) {
+      background-color: #ddd;
+    }
+    li a.active {
+      color: white;
+      background-color: #4CAF50;
+    }
+  </style>
+
+  <script>
+    var currIP="127.0.0.1";
+    var userIP="127.0.0.2";
+    var userIPdef="";
+    // Can't use fadeOut or fadeIn
+      function getWAN_IP() {
+        try {
+          $.get("http://ip-api.com/json", function (result) {
+            // "http://ip-api.com/json" Return sample :
+            // {"as":"AS12271 Time Warner Cable Internet LLC","city":"Brooklyn","country":"United States","countryCode":"US","isp":"Time Warner Cable","lat":40.7111,"lon":-73.9469,"org":"Time Warner Cable","query":"24.90.230.251","region":"NY","regionName":"New York","status":"success","timezone":"America/New_York","zip":"11211"}
+            var obj_json = eval(result);
+            // if ($("#textbox_host").val() == "ectcctv.net") {
+            //   $("#textbox_host").val(obj_json.query);
+            // }
+            $("#lable_waiting").text("Your WAN IP is - ");
+            
+            currIP = obj_json.query;
+
+            $("#lable_your_ip_info").text(currIP);
+
+            if (obj_json.zip != "") {
+              $("#lable_location").text(" "+obj_json.city+", "+obj_json.regionName+", "+obj_json.zip+", "+obj_json.country );
+            }
+            $("#lable_host_isp").text("ISP: "+obj_json.isp+", ");
+            // $("#lable_host_as").text(obj_json.as+", ");
+            $("#lable_host_map").text("Latitude/Longitude: [ " + obj_json.lat+", "+obj_json.lon+" ]");
+          });
+        }
+        catch (e) {
+          alert(e);
+        }
+      };
+
+     $(document).ready(function () {
+       getWAN_IP();
+       $(".portArea").click(function () {
+        //  $(".portArea").hide();
+       });
+       $("button").click(function () {
+          getWAN_IP();
+       });
+       
+     });
+
+  </script>
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <!-- Menu Row -->
+      <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
+        <ul>
+          <li><a class="active" href="#port">PortTester</a></li>
+          <li><a href="#customer">Customer</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#about">about</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row" id="contentArea">
+      <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
+        <!-- content area -->
+        <div class="row">
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+          <div class="alert alert-dark col-xs-4 col-sm-4 col-md-10 col-lg-10 IPArea" role="alert">
+            <span id="lable_waiting">Waiting WAN IP information 0.0.0.0</span>
+            <span id="lable_your_ip_info" class="badge badge-secondary" ></span><br>
+            <span id="lable_location" ></span><br>
+            <span id="lable_host_isp"></span><br>
+            <span id="lable_host_map"></span>
+          </div>
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+          <div class="alert alert-primary col-xs-2 col-sm-2 col-md-5 col-lg-5 portArea" role="alert" onclick="port_test(85)">
+            <span id="port85">Port 85</span>
+          </div>
+          <div class="alert alert-secondary col-xs-2 col-sm-2 col-md-5 col-lg-5 portArea" role="alert" onclick="port_test(6036)">
+            <span id="port6036">Port 6036</span>
+          </div>
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+          <div class="alert alert-danger col-xs-2 col-sm-2 col-md-5 col-lg-5 portArea" role="alert" onclick="port_test(8000)">
+            <span id="port8000">Port 8000</span>
+          </div>
+          <div class="alert alert-warning col-xs-2 col-sm-2 col-md-5 col-lg-5 portArea" role="alert" onclick="port_test(5938)">
+            <span id="port5938">Port 5938</span>
+          </div>
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+          <div class="alert alert-dark col-xs-2 col-sm-2 col-md-5 col-lg-5 portArea" role="alert" onclick="port_test(8554)">
+            <span id="port8554">Port 8554</span>
+          </div>
+          <div class="alert alert-success col-xs-2 col-sm-2 col-md-5 col-lg-5 portArea" role="alert" onclick="port_test(3389)">
+            <span id="port3389">Port 3389</span>
+          </div>
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+
+        <div class="row">
+          <div class="divCenter alert alert-default" role="alert">
+            <input type="text" name="userIP" id="userIP" value="" placeholder="Domain or IP" onBlur="resultDNS()" onfocus="this.select()">
+            <input type="text" name="userPort" id="userPort" value="" placeholder="Port" onfocus="this.select()">
+            <button class="btn btn-secondary" id="userDef" onclick="userDef()">User Define Check</button><br>
+            <span class="badge badge-secondary" id="userLabel"></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
+  <script>
+    setTimeout("updateIPinput()",1000);// update the user define ip;
+    var open_port_max=300;
+    var closed_port_max=2000;
+    function port_test(port){
+      try
+      {
+          ws = new WebSocket("ws://" + currIP + ":" + port);
+          start_time = (new Date).getTime();
+          setTimeout("check_ws("+ port +")",1);
+      }
+      catch(err){
+          alert("Port Tester Error...");
+          return;
+      }
+
+    }
+    function check_ws(port){
+        var interval = (new Date).getTime() - start_time;
+        if(ws.readyState == 0){
+            if(interval > closed_port_max){
+              $("#port"+port).text("Port ["+ port + "] time out");
+            }
+            else{
+              setTimeout("check_ws("+ port +")",5);
+            }
+        }
+        else{
+            if(interval < open_port_max){
+              $("#port"+port).text("Port ["+ port + "] Open");
+            }
+            else{
+              $("#port"+port).text("Port ["+ port + "] Close");
+            }
+        }
+    }
+    function userDef(){
+      $("#userLabel").html("");
+      if ($("#userIP").val() == "" || $("#userPort").val() == ""){return;}
+      if (!isValidport($("#userPort").val())){
+        $("#userLabel").html("Not Valid Port.");
+        return;
+      }
+      try
+      {
+          port = $("#userPort").val();
+          ws = new WebSocket("ws://" + userIP + ":" + port);
+          start_time = (new Date).getTime();
+          setTimeout("check_ws_u("+ port +")",1);
+      }
+      catch(err){
+          alert("User Define Port Tester Error...");
+          return;
+      }
+    }
+    function check_ws_u(port){
+        //alert(userIP + " " + $("#userPort").val());
+        var interval = (new Date).getTime() - start_time;
+        if(ws.readyState == 0){
+            if(interval > closed_port_max){
+              $("#userLabel").html(userIP + "Port [ "+ port + " ] time out");
+            }
+            else{
+              setTimeout("check_ws_u("+ port +")",5);
+            }
+        }
+        else{
+            if(interval < open_port_max){
+              $("#userLabel").html(userIP + " <strong>Port [ "+ port + " ] Open </strong>");
+            }
+            else{
+              $("#userLabel").html(userIP + " Port [ "+ port + " ] Close");
+            }
+        }
+    }
+
+    function isValidip(ipAdd){
+      var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+      if(ipformat.test(ipAdd)){
+        return true;
+      }
+      else return false;
+    }
+    function isValidport(port){
+      if(isNaN(port)||port>65535||port<0){
+        return false;
+      }else return true;
+    }
+
+    function updateIPinput(){
+      $("#userIP").val(currIP);
+      userIP=currIP;
+      $("#userPort").val(80);
+    }
+
+    function resultDNS(){
+      if (isValidip($("#userIP").val())){
+        userIP = $("#userIP").val();
+        return;
+      }
+      $.get("http://ip-api.com/json/" + $("#userIP").val().replace(/(^\s*)|(\s*$)/g, ""), function(result){
+          var obj_json =eval(result);
+          if (obj_json.query != $("#userIP").val().replace(/(^\s*)|(\s*$)/g, "")){
+            userIPdef= obj_json.query + " " + obj_json.isp + "   ZIP " + obj_json.zip ;
+            $("#userLabel").html(userIPdef);
+            userIP = obj_json.query;
+          }else{
+            $("#userLabel").html("Domain name is undefined.");
+            return;
+          }
+			  });
+    }
+
+  </script>
+  <!-- JavaScript for get IP address -->
+
+
+
+</body>
+
+</html>
